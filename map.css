@@ -1,0 +1,21 @@
+#mapid {
+	height: 80%;
+ 	width: 100%}
+
+#titre {
+	background-color: Black ;
+	height: 5%;
+	font-size : 9mm;
+	text-align: center;}
+
+#inventaire {
+	height: 15%;
+	background-color: Darkred ;
+}
+
+
+html{
+  font-family: Arial;
+  text-align: justify;
+  background-color: Black;
+}
