@@ -14,39 +14,14 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 var markers = [];
 var inventaire = [];
 
-var ajax = new XMLHttpRequest();
-ajax.open('GET', 'objets.php',true);
-ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+var ajaxd = new XMLHttpRequest();
+ajaxd.open('GET', 'objets.php',true);
+ajaxd.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
-ajax.addEventListener('load',  debut);
+ajaxd.addEventListener('load',  function() { creerObjet(ajaxd) });
 
-ajax.send(null);
+ajaxd.send(null);
 
-
-
-function debut(){
-	var objets = ajax.response;
-	var objJS = JSON.parse(objets);
-
-
-	for (var o of objJS) {
-
-			var point = L.icon({
-			  iconUrl: 'images/' + o.nom + '.png',
-				iconSize:     [77, 95], // size of the icon
-			  iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-			  popupAnchor:  [-3, -76], // point from which the popup should open relative to the iconAnchor
-				className : o.id,
-				latlng : [o.lat,o.longi]
-			});
-
-			var marker = L.marker([o.lat, o.longi], {icon: point});
-
-			markers.push(marker);
-			marker.addTo(mymap);
-			marker.addEventListener('click',OnClickMark);
-		}
-}
 
 mymap.addEventListener('zoom',AffichMark);
 
@@ -60,46 +35,49 @@ function AffichMark(){
 	}
 	else{
 		for (var m of markers){
-			console.log(m);
 			m.remove();
 		}
 	}
 }
 
-
 function OnClickMark(){
-	var id_obj = this.options.icon.options.className;
+	var id_obj = this.options.icon.options.id;
+	console.log(id_obj);
 
-	var ajax = new XMLHttpRequest();
-	ajax.open('GET', 'objets.php?id='+id_obj,true);
-	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+//	var ajax = new XMLHttpRequest();
+//	ajax.open('GET', 'objets.php?id='+id_obj,true);
+//	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
-	ajax.addEventListener('load',  interractMark(id_obj));
+//	ajax.addEventListener('load', function(){ interractMark(id_obj,ajax)});
 
-	ajax.send(null);
+//	ajax.send(null);
 
-	if (id_obj == '1') {
+	interractMark(this.options.icon.options);
+
+	if (id_obj == 1) {
 		var ok = confirm("Buongiorno ragazzino !\n Si tu es ici, c'est que tu sait qui je suis....\n No ? \n Je suis Toto Rina et moi et mon organisation la Cosa Nostra nous voulons nous implanter ici a Marseille.  On m'a dit que tu étais fiable, c'est pourquoi je te confie la première mission, notre première livraison.  Tu auras besoin d'argent que tu trouveras :\n \n  1)Au vieux Port chez un ami qui tient un restaurant.\n  2)Aux Iles de Frioul chez mon cousin.\n  3)Dans un musée un peu spécial du quartier Saint Barthélémy. \n \n  Tu n'auras plus qu'a effectuer la transaction a la gare Saint Charles. Je compte sur toi. (OK : pour commencer le jeu)");
 
 		if (ok) {
 
-			for (var i = 1; i < 5; i++) {
-				chargeObjet(i);
+			for (var i = 1; i < 6; i++) {
+				chargeObjet(i,creerObjet);
 			}
 		}
 
 
 	}
 
+
 }
 
-function interractMark(id_obj) {
-	var reponse = ajax.response;
-	var obj = JSON.parse(reponse);
+function interractMark(mark) {
+//	var reponse = ajax.response;
+//	var obj = JSON.parse(reponse);
 
-	for (var o of obj) {
+	console.log("CLICK");
 
-		if (o.blocked_by != null) {
+	if (mark.blocked_by != null) {
+			console.log("WSH");
 			if (doCheck(o.blocked_by,inventaire)){
 				if (o.recuperable == "1"){
 				addInventaire(id_obj); }
@@ -109,7 +87,8 @@ function interractMark(id_obj) {
 			}
 		}
 
-		else if (o.blocked_bycode != null) {
+	else if (mark.blocked_bycode != null) {
+
 			var code = prompt("Il vous faut un code pour déverouiller l'objet : " + o.nom ,"");
 			if (o.blocked_bycode != code ){
 				alert("Erreur. Le code entré est incorrect.");
@@ -121,25 +100,19 @@ function interractMark(id_obj) {
 			}
 			}
 
-		else if (o.recuperable == '1'){
-			addInventaire(id_obj);
+	else if (mark.recuperable == 1){
+			addInventaire(mark);
 		}
 
-	}
 }
 
-function addInventaire(id){
-
-}
-
-
-function chargeObjet(idO){
+function chargeObjet(idO,fct){
 	var ajax = new XMLHttpRequest();
 	ajax.open('GET', 'objets.php?id='+idO,true);
 	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
 
-	ajax.addEventListener('load',  creerObjet(ajax));
+	ajax.addEventListener('load',  function() {fct(ajax) });
 	ajax.send(null);
 
 
@@ -157,8 +130,11 @@ function creerObjet(ajax) {
 				iconSize:     [77, 95], // size of the icon
 			  iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
 			  popupAnchor:  [-3, -76], // point from which the popup should open relative to the iconAnchor
-				className : o.id,
-				latlng : [o.lat,o.longi]
+				id : o.id,
+				nom : o.nom,
+				recuperable : o.recuperable,
+				blocked_by : o.blocked_by,
+				blocked_bycode : o.blocked_bycode
 			});
 
 			var marker = L.marker([o.lat, o.longi], {icon: point});
@@ -168,6 +144,25 @@ function creerObjet(ajax) {
 			marker.addTo(mymap);
 			marker.addEventListener('click',OnClickMark);
 		}
+}
+
+function addInventaire(mark){
+	inventaire.push(mark.id);
+
+	var conteneur = document.getElementById('inventaire');
+	var monImg = document.createElement('img');
+	monImg.src = "images/"+ mark.nom +".png";
+
+	conteneur.appendChild(monImg);
+	mark.remove();
+
+	var i = 0 ;
+	for (var m of markers){
+		if (m == mark ){
+			markers.splice(i, 1);
+		}
+		i = i+1;
+	}
 }
 
 

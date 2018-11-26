@@ -9,7 +9,7 @@
 
 	if (isset($_GET['id'])) {
 		$id = $_GET['id'];
-		$r  = "SELECT * FROM objets WHERE id=" . (int) $id;
+		$r = "SELECT * FROM objets WHERE id=" . $id;
 
 	}
 	else {
@@ -24,5 +24,5 @@
 	} else {
 	 	echo "Erreur de requête de base de données.";
  	}
-	 	echo json_encode($objets);
+	 	echo json_encode($objets,JSON_NUMERIC_CHECK);
 ?>
