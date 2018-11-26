@@ -26,17 +26,16 @@ ajaxd.send(null);
 mymap.addEventListener('zoom',AffichMark);
 
 function AffichMark(){
+	for (var m of markers){
 
-	if (mymap.getZoom() >= 17) {
-		for (var m of markers){
+		if (mymap.getZoom() >= m.options.icon.options.zoom) {
 			m.addTo(mymap);
 			m.addEventListener('click',OnClickMark);
 		}
-	}
-	else{
-		for (var m of markers){
+		else{
 			m.remove();
 		}
+
 	}
 }
 
@@ -78,9 +77,9 @@ function interractMark(mark) {
 
 	if (mark.blocked_by != null) {
 			console.log("WSH");
-			if (doCheck(o.blocked_by,inventaire)){
-				if (o.recuperable == "1"){
-				addInventaire(id_obj); }
+			if (doCheck(mark.blocked_by,inventaire)){
+				if (mark.recuperable == 1){
+				addInventaire(mark); }
 			}
 			else {
 				alert("IL VOUS MANQUE UN OBJET.");
@@ -89,14 +88,14 @@ function interractMark(mark) {
 
 	else if (mark.blocked_bycode != null) {
 
-			var code = prompt("Il vous faut un code pour déverouiller l'objet : " + o.nom ,"");
-			if (o.blocked_bycode != code ){
+			var code = prompt("Il vous faut un code pour déverouiller l'objet : " + mark.nom ,"");
+			if (mark.blocked_bycode != code ){
 				alert("Erreur. Le code entré est incorrect.");
 			}
 			else {
-				alert("Félicitations votre " + o.nom + " est accessible.")
-				if (o.recuperable == "1"){
-				addInventaire(id_obj); }
+				alert("Félicitations votre " + mark.nom + " est accessible.")
+				if (mark.recuperable == "1"){
+				addInventaire(mark); }
 			}
 			}
 
@@ -134,7 +133,8 @@ function creerObjet(ajax) {
 				nom : o.nom,
 				recuperable : o.recuperable,
 				blocked_by : o.blocked_by,
-				blocked_bycode : o.blocked_bycode
+				blocked_bycode : o.blocked_bycode,
+				zoom : o.zoom
 			});
 
 			var marker = L.marker([o.lat, o.longi], {icon: point});
@@ -154,11 +154,11 @@ function addInventaire(mark){
 	monImg.src = "images/"+ mark.nom +".png";
 
 	conteneur.appendChild(monImg);
-	mark.remove();
 
 	var i = 0 ;
 	for (var m of markers){
-		if (m == mark ){
+		m.remove();
+		if ( m.options.icon.options.id == mark.id ){
 			markers.splice(i, 1);
 		}
 		i = i+1;
