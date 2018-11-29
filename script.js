@@ -13,6 +13,9 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 var markers = [];
 var inventaire = [];
+var selection = 0;
+var maf = 0;
+var complices = 0;
 
 var ajaxd = new XMLHttpRequest();
 ajaxd.open('GET', 'objets.php',true);
@@ -41,51 +44,84 @@ function AffichMark(){
 
 function OnClickMark(){
 	var id_obj = this.options.icon.options.id;
-	console.log(id_obj);
-
-//	var ajax = new XMLHttpRequest();
-//	ajax.open('GET', 'objets.php?id='+id_obj,true);
-//	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
-//	ajax.addEventListener('load', function(){ interractMark(id_obj,ajax)});
-
-//	ajax.send(null);
 
 	interractMark(this.options.icon.options);
 
 	if (id_obj == 1) {
 		var ok = confirm("Buongiorno ragazzino !\n Si tu es ici, c'est que tu sait qui je suis....\n No ? \n Je suis Toto Rina et moi et mon organisation la Cosa Nostra nous voulons nous implanter ici a Marseille.  On m'a dit que tu étais fiable, c'est pourquoi je te confie la première mission, notre première livraison.  Tu auras besoin d'argent que tu trouveras :\n \n  1)Au vieux Port chez un ami qui tient un restaurant.\n  2)Aux Iles de Frioul chez mon cousin.\n  3)Dans un musée un peu spécial du quartier Saint Barthélémy. \n \n  Tu n'auras plus qu'a effectuer la transaction a la gare Saint Charles. Je compte sur toi. (OK : pour commencer le jeu)");
 
-		if (ok) {
-
+		if (ok && maf == 0 ) {
+			maf+=1;
 			for (var i = 1; i < 6; i++) {
 				chargeObjet(i,creerObjet);
 			}
 		}
-
-
 	}
 
+	else if (id_obj == 9) {
+		var code = alert("Le code est : " + this.options.icon.options.nom )
+	}
 
+	else if (id_obj == 10){
+		window.location.href="fin.html"
+	}
 }
 
 function interractMark(mark) {
-//	var reponse = ajax.response;
-//	var obj = JSON.parse(reponse);
-
-	console.log("CLICK");
 
 	if (mark.blocked_by != null) {
-			console.log("WSH");
-			if (doCheck(mark.blocked_by,inventaire)){
-				if (mark.recuperable == 1){
-				addInventaire(mark); }
-			}
-			else {
-				alert("IL VOUS MANQUE UN OBJET.");
-			}
-		}
+			if (selection == mark.blocked_by){
 
+				if (mark.recuperable == 1){
+					addInventaire(mark);
+
+					if (mark.id == 7) {
+						chargeObjet(10,creerObjet);
+
+					}
+
+				}
+
+				else if (mark.id == 5) {
+					var ok = confirm("Mammamiaaaaa ! Les Américains nous ont attaqués, et ont pris la cargaison... Préparons la vengeance !!!! \n Utilise l'argent que tu viens de récuperer pour aller acheter des armes au marché noir du Mont de Saint-Cyr. Puis fonce aux Beaumettes, on a des ragazzis prêts à s'évader et nous prêter main forte contre les maudits suppots d'Al Capone.");
+
+					if (ok){
+
+						for (var m of markers){
+							if ( m.options.icon.options.id == mark.id ){
+								markers.splice(i, 1);
+								m.remove();
+							}
+							if (m.options.icon.options.id == 1){
+								markers.splice(i,1);
+								m.remove;
+							}
+							i = i+1;
+						}
+
+						for (var i = 6; i < 8; i++){
+							chargeObjet(i,creerObjet);
+						}
+					}
+				}
+
+			}
+
+			else if (mark.id == 7 || complices == 0){
+				complices += 1;
+
+				alert("Ciao ragazzo ! Nous sommes tes complices, et nous allons t'aider a mettre une raclée aux américains. Pour nous évader il nous faut notre hélicoptère, posé a l'hippodrome de Pont Vivaux. Le pilote te demandera un code qui se trouve au Palais du Pharo. \n Mémorise le code, prends l'hélicoptère et viens nous chercher. ");
+
+				for (var i =8; i < 10; i++){
+					chargeObjet(i,creerObjet);
+				}
+
+			}
+
+			else {
+						alert("Veuillez selectionner le bon objet.");
+					}
+	}
 	else if (mark.blocked_bycode != null) {
 
 			var code = prompt("Il vous faut un code pour déverouiller l'objet : " + mark.nom ,"");
@@ -98,7 +134,6 @@ function interractMark(mark) {
 				addInventaire(mark); }
 			}
 			}
-
 	else if (mark.recuperable == 1){
 			addInventaire(mark);
 		}
@@ -151,26 +186,42 @@ function addInventaire(mark){
 
 	var conteneur = document.getElementById('inventaire');
 	var monImg = document.createElement('img');
+	var emplacement = document.createElement('div');
+	emplacement.id = mark.id;
+	emplacement.className = inventaire;
 	monImg.src = "images/"+ mark.nom +".png";
+	monImg.style = "height:15mm"
 
-	conteneur.appendChild(monImg);
+	emplacement.appendChild(monImg);
+	conteneur.appendChild(emplacement);
+
+	monImg.addEventListener('click',function () { clickInventaire(mark,this) })
 
 	var i = 0 ;
 	for (var m of markers){
-		m.remove();
 		if ( m.options.icon.options.id == mark.id ){
 			markers.splice(i, 1);
+			m.remove();
 		}
 		i = i+1;
 	}
 }
 
+function clickInventaire(mark,im){
+	selection = mark.id;
+	console.log("vfvv");
 
-function doCheck(value, array) {
-	for (var i = 0; i < array.length; i++) {
-		if (array[i] == value) {
-			return true;
-		}
+	var s  = document.getElementsByClassName('selec');
+	console.log(s);
+
+	for (i of s){
+		i.className = 'inventaire';
 	}
-	return false;
+
+	var emplacement = document.getElementById(mark.id);
+	emplacement.className = 'selec';
+
+	var s  = document.getElementsByClassName('selec');
+	console.log(s);
+
 }

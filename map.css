@@ -11,9 +11,25 @@
 #inventaire {
 	height: 15%;
 	background-color: Darkred ;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+
 }
 
+.selec {
+	background-color: Orange;
+	height : 15mm;
+	width : 20mm;
+	display: inline;
+}
 
+.inventaire {
+	background-color: Darkred ;
+	height : 15mm;
+	width : 20mm;
+	display: inline;
+}
 html{
   font-family: Arial;
   text-align: justify;
