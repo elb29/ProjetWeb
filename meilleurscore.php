@@ -1,36 +1,26 @@
 <?php
-$link = mysqli_connect('localhost', 'my_userroot', '', 'scores');
+
+$link = mysqli_connect('localhost', 'root', '', 'projetweb');
+mysqli_set_charset($link, "utf8");
 
 if (!$link) {
   die('Erreur de connexion');
 } else {
-  echo 'Succès... ';
+
 }
 
-$sql_1 = "CREATE TABLE `score` (
-	`id` int(3) NOT NULL,
-	`nom` text,
-	`prenom` text,
-	`temps` float);
-  
-  INSERT INTO `score` (`id`, `nom`, `prenom`, `temps`) VALUES
-  (1, 'joueur', 'premier', 0),
-  (2,'joueur', 'deuxieme', 0), 
-  (3, 'joueur', 'troisieme', 0);
-  
-  ";
-  
-mysqli_query($link, $sql_1);
+$selec = "SELECT pseudo,temps FROM scores ORDER BY temps LIMIT 1";
 
-
-if($_POST['type']== 'affichage'){
-
-	$selec = "SELECT nom,prenom FROM score WHERE min(temps)";
-
-    echo json_encode($select);
+if ($result = mysqli_query($link, $selec)) {
+ while ($ligne = mysqli_fetch_assoc($result)) {
+	$score[] = $ligne;
+	}
+} else {
+	echo "Erreur de requête de base de données.";
 }
 
 
+echo json_encode($score);
 
 
 ?>

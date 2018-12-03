@@ -4,18 +4,14 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(mymap);
 
-//function onMapClick(e) {
-//		  alert("You clicked the map at " + e.latlng);
-//		}
-
-//mymap.on('click', onMapClick);
-
 
 var markers = [];
 var inventaire = [];
 var selection = 0;
 var maf = 0;
 var complices = 0;
+var joueur = "";
+var debut ;
 
 var ajaxd = new XMLHttpRequest();
 ajaxd.open('GET', 'objets.php',true);
@@ -51,6 +47,8 @@ function OnClickMark(){
 		var ok = confirm("Buongiorno ragazzino !\n Si tu es ici, c'est que tu sait qui je suis....\n No ? \n Je suis Toto Rina et moi et mon organisation la Cosa Nostra nous voulons nous implanter ici a Marseille.  On m'a dit que tu étais fiable, c'est pourquoi je te confie la première mission, notre première livraison.  Tu auras besoin d'argent que tu trouveras :\n \n  1)Au vieux Port chez un ami qui tient un restaurant.\n  2)Aux Iles de Frioul chez mon cousin.\n  3)Dans un musée un peu spécial du quartier Saint Barthélémy. \n \n  Tu n'auras plus qu'a effectuer la transaction a la gare Saint Charles. Je compte sur toi. (OK : pour commencer le jeu)");
 
 		if (ok && maf == 0 ) {
+			var d = new Date();
+			debut = d.getTime();
 			maf+=1;
 			for (var i = 1; i < 6; i++) {
 				chargeObjet(i,creerObjet);
@@ -59,11 +57,32 @@ function OnClickMark(){
 	}
 
 	else if (id_obj == 9) {
-		var code = alert("Le code est : " + this.options.icon.options.nom )
+		var pseudo = prompt("Comment tu t'appelles? ","");
+
+		while (pseudo == "") {
+			pseudo = prompt ("Je t'ai demandé, comment tu t'appelles ? Ce n'est pas clair comme question ?","");
+		}
+
+		var code = alert("Mmmmmh c'est bien toi que j'attendais " + pseudo + ". Le code est : " + this.options.icon.options.nom );
+		joueur = pseudo;
+
+
 	}
 
 	else if (id_obj == 10){
-		window.location.href="fin.html"
+		var d = new Date();
+		var fin = d.getTime();
+		var temps = new Date(fin-debut).toISOString().slice(11, -1);
+		console.log(temps);
+
+		var ajaxf = new XMLHttpRequest();
+		ajaxf.open('POST', 'score.php',true);
+		ajaxf.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		ajaxf.send("pseudo="+joueur+"&temps="+temps);
+		var objets = ajaxf.response;
+		console.log(objets);
+
+
 	}
 }
 
@@ -92,9 +111,9 @@ function interractMark(mark) {
 								markers.splice(i, 1);
 								m.remove();
 							}
-							if (m.options.icon.options.id == 1){
+							else if (m.options.icon.options.id == 1){
 								markers.splice(i,1);
-								m.remove;
+								m.remove();
 							}
 							i = i+1;
 						}
@@ -107,7 +126,7 @@ function interractMark(mark) {
 
 			}
 
-			else if (mark.id == 7 || complices == 0){
+			else if (mark.id == 7 && complices == 0){
 				complices += 1;
 
 				alert("Ciao ragazzo ! Nous sommes tes complices, et nous allons t'aider a mettre une raclée aux américains. Pour nous évader il nous faut notre hélicoptère, posé a l'hippodrome de Pont Vivaux. Le pilote te demandera un code qui se trouve au Palais du Pharo. \n Mémorise le code, prends l'hélicoptère et viens nous chercher. ");
@@ -129,7 +148,7 @@ function interractMark(mark) {
 				alert("Erreur. Le code entré est incorrect.");
 			}
 			else {
-				alert("Félicitations votre " + mark.nom + " est accessible.")
+				alert("Félicitations votre " + mark.nom + " est accessible.");
 				if (mark.recuperable == "1"){
 				addInventaire(mark); }
 			}
@@ -155,10 +174,9 @@ function chargeObjet(idO,fct){
 function creerObjet(ajax) {
 	var objets = ajax.response;
 	var objJS = JSON.parse(objets);
-	console.log(objJS);
 
 	for (var o of objJS) {
-			console.log(o.nom);
+			
 			var point = L.icon({
 			  iconUrl: 'images/' + o.nom + '.png',
 				iconSize:     [77, 95], // size of the icon
