@@ -53,6 +53,7 @@ function OnClickMark(){
 			for (var i = 1; i < 6; i++) {
 				chargeObjet(i,creerObjet);
 			}
+
 		}
 	}
 
@@ -65,6 +66,10 @@ function OnClickMark(){
 
 		var code = alert("Mmmmmh c'est bien toi que j'attendais " + pseudo + ". Le code est : " + this.options.icon.options.nom );
 		joueur = pseudo;
+
+	
+
+		
 
 
 	}
@@ -81,6 +86,8 @@ function OnClickMark(){
 		ajaxf.send("pseudo="+joueur+"&temps="+temps);
 		var objets = ajaxf.response;
 		console.log(objets);
+		var ok = confirm("bravo tu as gagné !");
+		if(ok){window.location.assign("index.html")}
 
 
 	}
