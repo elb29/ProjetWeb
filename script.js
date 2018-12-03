@@ -5,13 +5,13 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(mymap);
 
 
-var markers = [];
-var inventaire = [];
-var selection = 0;
-var maf = 0;
-var complices = 0;
-var joueur = "";
-var debut ;
+var markers = [];  		// liste des marqueurs présents sur la carte
+var inventaire = []; 	// liste des objets de l'addInventaire
+var selection = 0;		// id de l'objet délectionner dans l'inventaire
+var maf = 0;					// passe à un au premier passage à l'étape "mafieu"
+var complices = 0;		// passe à 1 au premier passage à l'étape "complices"
+var joueur = "";			// pseudo rentré par le joueur
+var debut ;						// time de debut du jeu, initilaisé au lancement du jeu
 
 var ajaxd = new XMLHttpRequest();
 ajaxd.open('GET', 'objets.php',true);
@@ -21,9 +21,9 @@ ajaxd.addEventListener('load',  function() { creerObjet(ajaxd) });
 
 ajaxd.send(null);
 
-
 mymap.addEventListener('zoom',AffichMark);
 
+// fonction qui gère l'affichage des objets de la carte en fonction de leur zoom respectif
 function AffichMark(){
 	for (var m of markers){
 
@@ -38,6 +38,8 @@ function AffichMark(){
 	}
 }
 
+
+// fonction qui gère les interractions par click sur les objets de la carte
 function OnClickMark(){
 	var id_obj = this.options.icon.options.id;
 	mark = this.options.icon.options;
@@ -160,6 +162,8 @@ function OnClickMark(){
 		}
 }
 
+
+// lancement de la requete ajax au objet.php qui appelle la bdd pour avoir l'objet d'id demandé
 function chargeObjet(idO,fct){
 	var ajax = new XMLHttpRequest();
 	ajax.open('GET', 'objets.php?id='+idO,true);
@@ -172,6 +176,8 @@ function chargeObjet(idO,fct){
 
 }
 
+
+// récupère la requete de la bdd et créer l'ibjet dans le jeu et sur la carte
 function creerObjet(ajax) {
 	var objets = ajax.response;
 	var objJS = JSON.parse(objets);
@@ -200,6 +206,8 @@ function creerObjet(ajax) {
 		}
 }
 
+
+// ajoute à l'inventaire l'objet récupéré sur la carte
 function addInventaire(mark){
 	inventaire.push(mark.id);
 
@@ -226,6 +234,8 @@ function addInventaire(mark){
 	}
 }
 
+
+// gère l'évènement de click sur un objet de l'inventaire
 function clickInventaire(mark,im){
 	selection = mark.id;
 	console.log("vfvv");
