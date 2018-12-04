@@ -72,18 +72,41 @@ function OnClickMark(){
 
 	else if (id_obj == 10){
 		var d = new Date();
+
 		var fin = d.getTime();
+		var penalite = 0 ;
+
+		var enigme1 = prompt("Quelle est la ville aux sept collines ? ","");
+
+		if (enigme1.toLowerCase() != "rome") {
+			penalite+=10;
+		}
+
+		var enigme2 = prompt("Complète la phrase : Vuoi Napoli e poi...","");
+
+		if (enigme2.toLowerCase() != "muori") {
+			penalite +=10
+		}
+
+		var enigme3 = prompt("Pour les Visconti, qui mange un enfant rouge ?","");
+		if (enigme3.toLowerCase() != "guivre") {
+			penalite +=10;
+		}
+
+		fin += penalite*1000;
+
 		var temps = new Date(fin-debut).toISOString().slice(11, -1);
-		console.log(temps);
+
+
+
+		var ok = confirm("Tu as gagné le combat et tes prouesses t'ont rapporté : " + penalite + " secondes de pénalité ! Ton score est de : " + temps);
+		if(ok){window.location.assign("index.html")}
 
 		var ajaxf = new XMLHttpRequest();
 		ajaxf.open('POST', 'score.php',true);
 		ajaxf.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 		ajaxf.send("pseudo="+joueur+"&temps="+temps);
 		var objets = ajaxf.response;
-
-		var ok = confirm("Bravo tu as gagné ! Ton score est de : " + temps);
-		if(ok){window.location.assign("index.html")}
 
 	}
 
