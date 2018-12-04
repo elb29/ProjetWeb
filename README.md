@@ -11,7 +11,7 @@ Installation :
 
   
 Pour lancer le jeu :
-  Dans le navigateur :
+  - Dans le navigateur :
     - Taper dans la barre url : localhost ou localhost:8080.
     - Remonter jusqu'au dossier du jeu, son ouverture devrait lancer le jeu.
 
