@@ -5,7 +5,7 @@ Installation :
   - Télécharger les fichiers du git dans un dossier du directory fourni par EasyPhp, et y dezipper le dossier images.
 
   Lancer EasyPhp:
-    -Lancer les serveurs : HTTP SERVER et DATABASE SERVER.
+    - Lancer les serveurs : HTTP SERVER et DATABASE SERVER.
 
   Dans le SGBD phpMyAdmin :
     - Créer une nouvelle base de données projetweb.
