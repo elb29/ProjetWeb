@@ -42,6 +42,7 @@ CREATE TABLE `scores` (
 --
 
 INSERT INTO `scores` (`pseudo`, `temps`) VALUES
+('Paul', '00:02:45'),
 ('Etienne', '06:59:59'),
 ('Etienne', '01:52:00'),
-('Etienne', '00:01:48');
+('Etienne', '00:03:48');
