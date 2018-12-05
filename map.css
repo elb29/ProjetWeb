@@ -14,21 +14,24 @@
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
+	
 
 }
 
 .selec {
-	background-color: Orange;
+	background-color: #222;
 	height : 15mm;
-	width : 20mm;
+	width : 35mm;
 	display: inline;
+
 }
 
 .inventaire {
 	background-color: Darkred ;
 	height : 15mm;
-	width : 20mm;
+	width : 35mm;
 	display: inline;
+
 }
 html{
   font-family: Arial;

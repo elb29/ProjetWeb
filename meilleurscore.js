@@ -11,7 +11,7 @@ ajax.send();
 function afficher(){
 
     var jsonObj = JSON.parse(ajax.response);
-		console.log(jsonObj);
+
 
 		for (var o of jsonObj){
 			  banniere.innerHTML = "<p id='best' > Meilleur score " + o.temps + " par : "+ o.pseudo + "</p>";

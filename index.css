@@ -59,5 +59,6 @@ a{
 #banniere p{
 
     /* tout afficher sur une seule ligne */
-    white-space: nowrap;
+	white-space: nowrap;
+	font-weight: bold;
 }

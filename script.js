@@ -261,10 +261,10 @@ function addInventaire(mark){
 // gère l'évènement de click sur un objet de l'inventaire
 function clickInventaire(mark,im){
 	selection = mark.id;
-	console.log("vfvv");
+
 
 	var s  = document.getElementsByClassName('selec');
-	console.log(s);
+
 
 	for (i of s){
 		i.className = 'inventaire';
@@ -274,6 +274,6 @@ function clickInventaire(mark,im){
 	emplacement.className = 'selec';
 
 	var s  = document.getElementsByClassName('selec');
-	console.log(s);
+
 
 }
